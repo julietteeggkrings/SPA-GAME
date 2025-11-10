@@ -51,40 +51,83 @@
         <!-- Main Game Area -->
         <div class="game-main">
 
-            <!-- Left Sidebar - Waiting Clients -->
+            <!-- Left Sidebar - Client Queue & Info -->
             <aside class="sidebar-left">
-                <div class="entrance-area">
-                    <div class="entrance-icon">🚪</div>
-                    <div class="entrance-text">Spa Entrance</div>
-                    <div class="entrance-subtitle">Clients arrive here</div>
-                </div>
                 <div class="section-header">
-                    <h2>👥 Waiting Clients</h2>
+                    <h2>👥 Client Queue</h2>
                     <button class="btn-small" id="generate-client">+ New Client</button>
                 </div>
-                <div class="clients-waiting" id="clients-waiting">
-                    <!-- Clients will be dynamically added here -->
+                <div class="clients-queue" id="clients-queue">
+                    <!-- Client queue list will be here -->
                 </div>
                 <div class="section-header" style="margin-top: 20px;">
-                    <h2>📅 Appointments</h2>
+                    <h2>📊 Statistics</h2>
                 </div>
-                <div class="appointments-list" id="appointments-list">
-                    <div class="no-data">No upcoming appointments</div>
+                <div class="stats-panel">
+                    <div class="stat-item">
+                        <span class="stat-label">Clients Served:</span>
+                        <span class="stat-value" id="clients-served">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Clients Lost:</span>
+                        <span class="stat-value" id="clients-lost">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Revenue:</span>
+                        <span class="stat-value" id="total-revenue">$0</span>
+                    </div>
                 </div>
             </aside>
 
-            <!-- Center - Spa Rooms -->
-            <main class="spa-rooms-area">
+            <!-- Center - Spa Floor Plan -->
+            <main class="spa-floor-plan">
                 <div class="section-header">
-                    <h2>🏛️ Spa Facilities</h2>
+                    <h2>🏛️ Spa Floor Plan</h2>
                     <div class="speed-controls">
                         <button class="btn-small" id="speed-1x">1x</button>
                         <button class="btn-small active" id="speed-2x">2x</button>
                         <button class="btn-small" id="speed-3x">3x</button>
                     </div>
                 </div>
-                <div class="rooms-grid" id="rooms-grid">
-                    <!-- Rooms will be dynamically added here -->
+                <div class="floor-plan-container" id="floor-plan">
+                    <!-- Reception Area -->
+                    <div class="reception-area" id="reception-area">
+                        <div class="reception-desk">
+                            <div class="desk-icon">🏨</div>
+                            <div class="desk-label">Reception</div>
+                        </div>
+                        <div class="waiting-clients" id="waiting-clients">
+                            <!-- Client avatars will appear here -->
+                        </div>
+                    </div>
+
+                    <!-- Spa Rooms will be positioned here -->
+                    <div class="spa-room room-massage-1" data-room-id="1">
+                        <div class="room-icon">💆</div>
+                        <div class="room-name">Massage 1</div>
+                        <div class="room-status"></div>
+                    </div>
+
+                    <div class="spa-room room-facial" data-room-id="2">
+                        <div class="room-icon">🧖</div>
+                        <div class="room-name">Facial</div>
+                        <div class="room-status"></div>
+                    </div>
+
+                    <div class="spa-room room-sauna" data-room-id="3">
+                        <div class="room-icon">🔥</div>
+                        <div class="room-name">Sauna</div>
+                        <div class="room-status"></div>
+                    </div>
+
+                    <div class="spa-room room-manicure" data-room-id="4">
+                        <div class="room-icon">💅</div>
+                        <div class="room-name">Manicure</div>
+                        <div class="room-status"></div>
+                    </div>
+
+                    <!-- Walking characters container -->
+                    <div id="walking-characters"></div>
                 </div>
             </main>
 

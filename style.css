@@ -217,12 +217,132 @@ body {
     }
 }
 
-/* Clients Waiting Area */
-.clients-waiting {
+/* Client Queue (Sidebar) */
+.clients-queue {
     display: flex;
     flex-direction: column;
     gap: 10px;
     min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.queue-item {
+    background: linear-gradient(135deg, #fffaf5 0%, #fef9f3 100%);
+    border-radius: 8px;
+    padding: 10px;
+    border-left: 4px solid #8bc3bf;
+    border: 2px solid rgba(139, 195, 191, 0.2);
+    border-left: 4px solid #8bc3bf;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.queue-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.queue-item.urgent {
+    border-left-color: #e8a098;
+    background: linear-gradient(135deg, #fff5f3 0%, #fef0ed 100%);
+}
+
+.queue-item.vip {
+    border-left-color: #e8c090;
+}
+
+.queue-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.queue-item-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.queue-item-badges {
+    display: flex;
+    gap: 5px;
+}
+
+.queue-badge-vip {
+    background: linear-gradient(135deg, #f4d5a6 0%, #e8c090 100%);
+    color: #6b4e31;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.7em;
+    font-weight: bold;
+}
+
+.queue-badge-urgent {
+    background: #e8a098;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.7em;
+    font-weight: bold;
+}
+
+.queue-item-service {
+    font-size: 0.8em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.queue-item-patience {
+    background: #f0f0f0;
+    border-radius: 3px;
+    height: 4px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.queue-patience-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff4444, #ffaa00, #44ff44);
+    transition: width 0.3s;
+}
+
+/* Stats Panel */
+.stats-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stat-item {
+    background: linear-gradient(135deg, #fffaf5 0%, #fef9f3 100%);
+    border-radius: 8px;
+    padding: 10px;
+    border: 2px solid rgba(139, 195, 191, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.stat-item .stat-value {
+    font-weight: bold;
+    color: #5dada6;
+    font-size: 1.1em;
+}
+
+/* Clients Waiting Area (floor plan) - different from sidebar */
+.waiting-clients {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-height: 80px;
+    padding: 10px;
 }
 
 .client-card {
@@ -407,8 +527,8 @@ body {
     color: #555;
 }
 
-/* Spa Rooms Area */
-.spa-rooms-area {
+/* Spa Floor Plan Area */
+.spa-floor-plan {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 250, 245, 0.9) 100%);
     border-radius: 15px;
     padding: 20px;
@@ -417,10 +537,233 @@ body {
     border: 2px solid rgba(93, 173, 166, 0.15);
 }
 
-.rooms-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+.floor-plan-container {
+    background: linear-gradient(135deg, #f9f5f0 0%, #f5ede3 100%);
+    border-radius: 12px;
+    min-height: 600px;
+    position: relative;
+    padding: 20px;
+    border: 3px solid rgba(139, 195, 191, 0.3);
+    overflow: hidden;
+}
+
+/* Reception Area */
+.reception-area {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.reception-desk {
+    background: linear-gradient(135deg, #5dada6 0%, #4a9d97 100%);
+    border-radius: 12px;
+    padding: 15px 30px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 3px solid rgba(255, 255, 255, 0.4);
+    margin-bottom: 15px;
+    transition: all 0.3s;
+}
+
+.reception-desk.client-arriving {
+    animation: receptionFlash 0.8s ease-out;
+}
+
+.desk-icon {
+    font-size: 2.5em;
+    margin-bottom: 5px;
+}
+
+.desk-label {
+    color: white;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.waiting-clients {
+    display: flex;
     gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-height: 80px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    border: 2px dashed rgba(139, 195, 191, 0.4);
+}
+
+/* Client Sprites at Reception */
+.client-sprite {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.client-sprite:hover {
+    transform: scale(1.1);
+}
+
+.client-sprite-avatar {
+    font-size: 3.5em;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.client-sprite-info {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 0.7em;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(139, 195, 191, 0.3);
+}
+
+.client-sprite-name {
+    font-weight: bold;
+    color: #5dada6;
+}
+
+.client-sprite-mood {
+    margin-left: 5px;
+}
+
+.client-sprite.urgent .client-sprite-avatar {
+    animation: urgentBounce 0.5s ease-in-out infinite;
+}
+
+.client-sprite.vip .client-sprite-info {
+    background: linear-gradient(135deg, #f4d5a6 0%, #e8c090 100%);
+    color: #6b4e31;
+    border-color: #e8c090;
+}
+
+@keyframes urgentBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Spa Rooms */
+.spa-room {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    background: linear-gradient(135deg, #fffaf5 0%, #fef9f3 100%);
+    border-radius: 12px;
+    border: 3px solid rgba(139, 195, 191, 0.3);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.spa-room:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    border-color: #8bc3bf;
+}
+
+.spa-room.occupied {
+    border-color: #e8c090;
+    background: linear-gradient(135deg, #fff9f0 0%, #fef5e8 100%);
+    box-shadow: 0 4px 12px rgba(232, 192, 144, 0.3);
+}
+
+.spa-room.drop-zone {
+    border: 3px dashed #8bc3bf;
+    background: linear-gradient(135deg, #f0f9f8 0%, #e6f5f3 100%);
+    animation: dropZonePulse 1s ease-in-out infinite;
+}
+
+.spa-room.client-arrived {
+    animation: roomClientArrived 0.6s ease-out;
+}
+
+@keyframes dropZonePulse {
+    0%, 100% { box-shadow: 0 3px 10px rgba(139, 195, 191, 0.3); }
+    50% { box-shadow: 0 5px 20px rgba(139, 195, 191, 0.5); }
+}
+
+@keyframes roomClientArrived {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 8px 24px rgba(139, 195, 191, 0.6);
+        background: linear-gradient(135deg, #f0f9f8 0%, #e6f5f3 100%);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
+@keyframes receptionFlash {
+    0% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 8px 24px rgba(139, 195, 191, 0.7);
+        border-color: #8bc3bf;
+        transform: scale(1.05);
+    }
+    100% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: scale(1);
+    }
+}
+
+.spa-room .room-icon {
+    font-size: 3em;
+}
+
+.spa-room .room-name {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #5dada6;
+    text-align: center;
+}
+
+.spa-room .room-status {
+    font-size: 0.75em;
+    color: #666;
+    text-align: center;
+}
+
+/* Room Positions */
+.room-massage-1 {
+    top: 200px;
+    left: 50px;
+}
+
+.room-facial {
+    top: 200px;
+    right: 50px;
+}
+
+.room-sauna {
+    bottom: 50px;
+    left: 50px;
+}
+
+.room-manicure {
+    bottom: 50px;
+    right: 50px;
 }
 
 .room-card {
@@ -922,19 +1265,29 @@ body {
 }
 
 /* Walking Character Animation */
-.walking-character {
-    position: fixed;
-    z-index: 9999;
+#walking-characters {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
-    transform: translate(-50%, -50%);
+    z-index: 100;
+}
+
+.walking-character {
+    position: absolute;
+    z-index: 100;
+    pointer-events: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 5px;
+    transform: translate(-50%, -50%);
 }
 
 .walking-avatar {
-    font-size: 4em;
+    font-size: 3em;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     transition: transform 0.2s;
 }

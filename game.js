@@ -233,11 +233,11 @@ function assignClientToRoom(client, room) {
         return false;
     }
 
-    // Get the positions before removing client from DOM
-    const clientCard = document.querySelector(`[data-client-id="${client.id}"]`);
-    const roomCard = document.querySelector(`[data-room-id="${room.id}"]`);
+    // Get the client sprite and room elements
+    const clientSprite = document.querySelector(`.client-sprite[data-client-id="${client.id}"]`);
+    const roomElement = document.querySelector(`.spa-room[data-room-id="${room.id}"]`);
 
-    if (!clientCard || !roomCard) {
+    if (!clientSprite || !roomElement) {
         // Fallback to instant assignment if elements not found
         startServiceInRoom(client, room);
         return true;
@@ -247,7 +247,7 @@ function assignClientToRoom(client, room) {
     removeClient(client.id);
 
     // Animate client walking to room
-    animateClientWalking(client, clientCard, roomCard, () => {
+    animateClientWalking(client, clientSprite, roomElement, () => {
         // After animation completes, start the service
         startServiceInRoom(client, room);
     });
@@ -277,11 +277,11 @@ function startServiceInRoom(client, room) {
     gameState.activeServices.push(activeService);
 
     // Flash the room to show client has arrived
-    const roomCard = document.querySelector(`[data-room-id="${room.id}"]`);
-    if (roomCard) {
-        roomCard.classList.add('client-arrived');
+    const roomElement = document.querySelector(`.spa-room[data-room-id="${room.id}"]`);
+    if (roomElement) {
+        roomElement.classList.add('client-arrived');
         setTimeout(() => {
-            roomCard.classList.remove('client-arrived');
+            roomElement.classList.remove('client-arrived');
         }, 600);
     }
 
@@ -290,14 +290,29 @@ function startServiceInRoom(client, room) {
 }
 
 /**
- * Animate client walking from waiting area to room
+ * Animate client walking from reception to room in floor plan
  */
 function animateClientWalking(client, fromElement, toElement, onComplete) {
-    // Get positions
+    const floorPlan = document.getElementById('floor-plan');
+    if (!floorPlan) {
+        // Fallback to instant service start
+        if (onComplete) onComplete();
+        return;
+    }
+
+    // Get positions relative to floor plan
+    const floorPlanRect = floorPlan.getBoundingClientRect();
     const fromRect = fromElement.getBoundingClientRect();
     const toRect = toElement.getBoundingClientRect();
 
+    // Calculate positions relative to floor plan container
+    const fromX = fromRect.left - floorPlanRect.left + fromRect.width / 2;
+    const fromY = fromRect.top - floorPlanRect.top + fromRect.height / 2;
+    const toX = toRect.left - floorPlanRect.left + toRect.width / 2;
+    const toY = toRect.top - floorPlanRect.top + toRect.height / 2;
+
     // Create walking character element
+    const walkingContainer = document.getElementById('walking-characters');
     const walkingChar = document.createElement('div');
     walkingChar.className = 'walking-character';
     walkingChar.innerHTML = `
@@ -305,35 +320,35 @@ function animateClientWalking(client, fromElement, toElement, onComplete) {
         <div class="walking-name">${client.name}</div>
     `;
 
-    // Position at start location
-    walkingChar.style.left = `${fromRect.left + fromRect.width / 2}px`;
-    walkingChar.style.top = `${fromRect.top + fromRect.height / 2}px`;
+    // Position at start location (relative to floor plan)
+    walkingChar.style.left = `${fromX}px`;
+    walkingChar.style.top = `${fromY}px`;
 
-    document.body.appendChild(walkingChar);
+    walkingContainer.appendChild(walkingChar);
 
-    // Trigger animation after a brief delay to ensure element is rendered
+    // Trigger animation after a brief delay
     setTimeout(() => {
-        const deltaX = toRect.left + toRect.width / 2 - (fromRect.left + fromRect.width / 2);
-        const deltaY = toRect.top + toRect.height / 2 - (fromRect.top + fromRect.height / 2);
+        const deltaX = toX - fromX;
+        const deltaY = toY - fromY;
 
-        // Calculate distance and duration (longer distance = longer animation)
+        // Calculate distance and duration
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        const duration = Math.max(800, Math.min(2000, distance * 1.5)); // 800ms to 2000ms
+        const duration = Math.max(800, Math.min(2000, distance * 2)); // 800ms to 2000ms
 
         // Flip character if walking left
         if (deltaX < 0) {
-            walkingChar.style.transform = 'scaleX(-1)';
+            walkingChar.style.transform = 'scaleX(-1) translate(-50%, -50%)';
+        } else {
+            walkingChar.style.transform = 'translate(-50%, -50%)';
         }
 
+        // Set transition and move to destination
         walkingChar.style.transition = `left ${duration}ms ease-in-out, top ${duration}ms ease-in-out`;
-        walkingChar.style.left = `${toRect.left + toRect.width / 2}px`;
-        walkingChar.style.top = `${toRect.top + toRect.height / 2}px`;
+        walkingChar.style.left = `${toX}px`;
+        walkingChar.style.top = `${toY}px`;
 
         // Add walking animation class
         walkingChar.classList.add('walking');
-
-        // Create footstep trail
-        createFootstepTrail(fromRect, toRect, duration);
 
         // Remove element and call completion callback after animation
         setTimeout(() => {
@@ -708,85 +723,139 @@ function handleDrop(event, room) {
 // ==================== UI RENDERING ====================
 
 /**
- * Animate entrance door when a client arrives
+ * Animate reception desk when a client arrives
  */
 function animateEntranceDoor() {
-    const entranceArea = document.querySelector('.entrance-area');
-    if (entranceArea) {
-        entranceArea.classList.add('client-arriving');
+    const receptionDesk = document.querySelector('.reception-desk');
+    if (receptionDesk) {
+        receptionDesk.classList.add('client-arriving');
         setTimeout(() => {
-            entranceArea.classList.remove('client-arriving');
+            receptionDesk.classList.remove('client-arriving');
         }, 800);
     }
 }
 
 /**
- * Render waiting clients
+ * Render waiting clients (in both floor plan and sidebar queue)
  */
 function renderClients() {
-    const container = document.getElementById('clients-waiting');
-
-    if (gameState.clients.length === 0) {
-        container.innerHTML = '<div class="no-data">No clients waiting</div>';
-        return;
-    }
-
     // Sort clients: VIPs first, then by patience (lowest first for urgency)
     const sortedClients = [...gameState.clients].sort((a, b) => {
         if (a.isVIP !== b.isVIP) return b.isVIP ? 1 : -1;
         return a.patience - b.patience;
     });
 
-    container.innerHTML = sortedClients.map(client => {
-        const patiencePercent = (client.patience / client.maxPatience) * 100;
-        const isUrgent = patiencePercent < 40;
-        const priorityIcon = client.isVIP ? '👑' : isUrgent ? '⚠️' : '';
+    // 1. Render client sprites at reception in floor plan
+    const receptionContainer = document.getElementById('waiting-clients');
+    if (gameState.clients.length === 0) {
+        receptionContainer.innerHTML = '<div style="color: #999; font-size: 0.9em; text-align: center;">No clients waiting</div>';
+    } else {
+        receptionContainer.innerHTML = sortedClients.map(client => {
+            const patiencePercent = (client.patience / client.maxPatience) * 100;
+            const isUrgent = patiencePercent < 40;
+            const priorityIcon = client.isVIP ? '👑' : isUrgent ? '⚠️' : '';
 
-        return `
-        <div class="client-card ${client.justArrived ? 'entering' : ''} ${isUrgent ? 'urgent' : ''}"
-             draggable="true"
-             data-client-id="${client.id}"
-             ondragstart="handleDragStart(event, ${JSON.stringify(client).replace(/"/g, '&quot;')})"
-             ondragend="handleDragEnd(event)">
-            <div class="client-avatar-section">
-                <div class="client-avatar">${client.avatar}</div>
-                <div class="client-info">
-                    <div class="client-header">
-                        <span class="client-name">${client.name}</span>
-                        ${client.isVIP ? '<span class="client-vip">VIP</span>' : ''}
-                    </div>
-                    <div class="client-mood-display">
-                        <span class="client-mood-icon">${clientMoods[client.mood]}</span>
-                        <span class="client-mood-text">${client.mood.charAt(0).toUpperCase() + client.mood.slice(1)}</span>
+            return `
+                <div class="client-sprite ${isUrgent ? 'urgent' : ''} ${client.isVIP ? 'vip' : ''} ${client.justArrived ? 'entering' : ''}"
+                     draggable="true"
+                     data-client-id="${client.id}">
+                    <div class="client-sprite-avatar">${client.avatar}</div>
+                    <div class="client-sprite-info">
+                        <span class="client-sprite-name">${client.name}</span>
+                        <span class="client-sprite-mood">${clientMoods[client.mood]}</span>
+                        ${priorityIcon ? `<span>${priorityIcon}</span>` : ''}
                     </div>
                 </div>
-                ${priorityIcon ? `<div class="priority-indicator">${priorityIcon}</div>` : ''}
-            </div>
-            <div class="client-service">Wants: ${client.requestedService}</div>
-            <div class="client-payment">Will pay: ${formatMoney(client.payment)}</div>
-            <div class="client-patience">
-                <div class="patience-bar ${isUrgent ? 'urgent' : ''}" style="width: ${patiencePercent}%"></div>
-            </div>
-            ${client.justArrived ? '<div class="entering-indicator">🚶 Just arrived!</div>' : ''}
-        </div>
-    `;
-    }).join('');
+            `;
+        }).join('');
 
-    // Re-attach drag handlers with proper client objects
-    gameState.clients.forEach(client => {
-        const element = container.querySelector(`[data-client-id="${client.id}"]`);
-        if (element) {
-            element.ondragstart = (e) => handleDragStart(e, client);
-            element.ondragend = handleDragEnd;
+        // Re-attach drag handlers for sprites
+        gameState.clients.forEach(client => {
+            const element = receptionContainer.querySelector(`[data-client-id="${client.id}"]`);
+            if (element) {
+                element.ondragstart = (e) => handleDragStart(e, client);
+                element.ondragend = handleDragEnd;
+            }
+        });
+    }
+
+    // 2. Render simplified queue in sidebar
+    const queueContainer = document.getElementById('clients-queue');
+    if (gameState.clients.length === 0) {
+        queueContainer.innerHTML = '<div class="no-data">No clients waiting</div>';
+    } else {
+        queueContainer.innerHTML = sortedClients.map(client => {
+            const patiencePercent = (client.patience / client.maxPatience) * 100;
+            const isUrgent = patiencePercent < 40;
+
+            return `
+                <div class="queue-item ${isUrgent ? 'urgent' : ''} ${client.isVIP ? 'vip' : ''}"
+                     data-client-id="${client.id}">
+                    <div class="queue-item-header">
+                        <span class="queue-item-name">${client.avatar} ${client.name}</span>
+                        <div class="queue-item-badges">
+                            ${client.isVIP ? '<span class="queue-badge-vip">VIP</span>' : ''}
+                            ${isUrgent ? '<span class="queue-badge-urgent">URGENT</span>' : ''}
+                        </div>
+                    </div>
+                    <div class="queue-item-service">${clientMoods[client.mood]} ${client.requestedService}</div>
+                    <div class="queue-item-patience">
+                        <div class="queue-patience-bar" style="width: ${patiencePercent}%"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Update stats
+    document.getElementById('clients-served').textContent = gameState.stats.totalClientsServed;
+    document.getElementById('clients-lost').textContent = gameState.stats.clientsLost;
+    document.getElementById('total-revenue').textContent = formatMoney(gameState.stats.totalRevenue);
+}
+
+/**
+ * Render spa rooms (update status of existing room elements)
+ */
+function renderRooms() {
+    gameState.rooms.forEach(room => {
+        const roomElement = document.querySelector(`.spa-room[data-room-id="${room.id}"]`);
+        if (!roomElement) return;
+
+        const activeService = gameState.activeServices.find(s => s.room.id === room.id);
+        const isOccupied = room.currentClient !== null;
+
+        // Update classes
+        roomElement.classList.toggle('occupied', isOccupied);
+
+        // Update status display
+        const statusDiv = roomElement.querySelector('.room-status');
+        if (activeService) {
+            const progress = Math.floor(activeService.progress);
+            statusDiv.innerHTML = `
+                <div style="font-size: 0.75em; margin-top: 5px;">
+                    <div style="font-weight: bold; color: #5dada6;">${activeService.client.name}</div>
+                    <div style="margin-top: 2px; background: #f0f0f0; border-radius: 3px; height: 4px; overflow: hidden;">
+                        <div style="background: linear-gradient(90deg, #5dada6, #8bc3bf); height: 100%; width: ${progress}%; transition: width 0.3s;"></div>
+                    </div>
+                </div>
+            `;
+        } else {
+            statusDiv.innerHTML = '<div style="font-size: 0.7em; color: #999;">Available</div>';
         }
+
+        // Set up drag and drop handlers
+        roomElement.ondragover = (e) => handleDragOver(e, room);
+        roomElement.ondragleave = handleDragLeave;
+        roomElement.ondrop = (e) => handleDrop(e, room);
     });
 }
 
 /**
- * Render spa rooms
+ * OLD RENDER: Keep for reference but not used
  */
-function renderRooms() {
+function renderRoomsOld() {
     const container = document.getElementById('rooms-grid');
+    if (!container) return; // Skip if using floor plan layout
 
     container.innerHTML = gameState.rooms.map(room => {
         const activeService = gameState.activeServices.find(s => s.room.id === room.id);
