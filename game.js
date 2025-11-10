@@ -75,6 +75,11 @@ const clientNames = {
     female: ["Emma", "Olivia", "Sophia", "Isabella", "Ava", "Mia", "Emily", "Abigail", "Madison", "Charlotte"]
 };
 
+const clientAvatars = {
+    male: ["👨", "👨‍💼", "🧔", "👨‍🦱", "👨‍🦰", "🧑", "👨‍🦳"],
+    female: ["👩", "👩‍💼", "👩‍🦱", "👩‍🦰", "🧑‍🦰", "👱‍♀️", "👩‍🦳"]
+};
+
 const clientMoods = {
     happy: "😊",
     neutral: "😐",
@@ -140,6 +145,7 @@ function generateClient() {
         id: gameState.nextClientId++,
         name: randomChoice(clientNames[gender]),
         gender: gender,
+        avatar: randomChoice(clientAvatars[gender]),
         isVIP: isVIP,
         requestedService: requestedService.name,
         serviceType: requestedService.type,
@@ -157,6 +163,15 @@ function generateClient() {
     animateEntranceDoor();
 
     renderClients();
+
+    // Auto-scroll to the newly arrived client
+    setTimeout(() => {
+        const clientCard = document.querySelector(`[data-client-id="${client.id}"]`);
+        if (clientCard) {
+            clientCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }, 100);
+
     showNotification("🚶 Client Arrived", `${client.name} ${client.isVIP ? '(VIP)' : ''} is waiting for ${client.requestedService}`, "success");
 }
 
@@ -594,25 +609,46 @@ function renderClients() {
         return;
     }
 
-    container.innerHTML = gameState.clients.map(client => `
-        <div class="client-card ${client.justArrived ? 'entering' : ''}"
+    // Sort clients: VIPs first, then by patience (lowest first for urgency)
+    const sortedClients = [...gameState.clients].sort((a, b) => {
+        if (a.isVIP !== b.isVIP) return b.isVIP ? 1 : -1;
+        return a.patience - b.patience;
+    });
+
+    container.innerHTML = sortedClients.map(client => {
+        const patiencePercent = (client.patience / client.maxPatience) * 100;
+        const isUrgent = patiencePercent < 40;
+        const priorityIcon = client.isVIP ? '👑' : isUrgent ? '⚠️' : '';
+
+        return `
+        <div class="client-card ${client.justArrived ? 'entering' : ''} ${isUrgent ? 'urgent' : ''}"
              draggable="true"
              data-client-id="${client.id}"
              ondragstart="handleDragStart(event, ${JSON.stringify(client).replace(/"/g, '&quot;')})"
              ondragend="handleDragEnd(event)">
-            <div class="client-header">
-                <span class="client-name">${client.name}</span>
-                ${client.isVIP ? '<span class="client-vip">VIP</span>' : ''}
-                <span class="client-mood">${clientMoods[client.mood]}</span>
+            <div class="client-avatar-section">
+                <div class="client-avatar">${client.avatar}</div>
+                <div class="client-info">
+                    <div class="client-header">
+                        <span class="client-name">${client.name}</span>
+                        ${client.isVIP ? '<span class="client-vip">VIP</span>' : ''}
+                    </div>
+                    <div class="client-mood-display">
+                        <span class="client-mood-icon">${clientMoods[client.mood]}</span>
+                        <span class="client-mood-text">${client.mood.charAt(0).toUpperCase() + client.mood.slice(1)}</span>
+                    </div>
+                </div>
+                ${priorityIcon ? `<div class="priority-indicator">${priorityIcon}</div>` : ''}
             </div>
             <div class="client-service">Wants: ${client.requestedService}</div>
             <div class="client-payment">Will pay: ${formatMoney(client.payment)}</div>
             <div class="client-patience">
-                <div class="patience-bar" style="width: ${(client.patience / client.maxPatience) * 100}%"></div>
+                <div class="patience-bar ${isUrgent ? 'urgent' : ''}" style="width: ${patiencePercent}%"></div>
             </div>
             ${client.justArrived ? '<div class="entering-indicator">🚶 Just arrived!</div>' : ''}
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     // Re-attach drag handlers with proper client objects
     gameState.clients.forEach(client => {
