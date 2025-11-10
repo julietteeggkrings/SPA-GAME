@@ -145,14 +145,19 @@ function generateClient() {
         serviceType: requestedService.type,
         payment: Math.floor(requestedService.basePrice * (isVIP ? 1.5 : 1) * gameState.modifiers.priceBonus),
         mood: "neutral",
-        patience: 100,
-        maxPatience: 100,
-        arrivalTime: Date.now()
+        patience: 200,
+        maxPatience: 200,
+        arrivalTime: Date.now(),
+        justArrived: true
     };
 
     gameState.clients.push(client);
+
+    // Animate entrance
+    animateEntranceDoor();
+
     renderClients();
-    showNotification("New Client", `${client.name} is waiting for ${client.requestedService}`, "info");
+    showNotification("🚶 Client Arrived", `${client.name} ${client.isVIP ? '(VIP)' : ''} is waiting for ${client.requestedService}`, "success");
 }
 
 /**
@@ -161,12 +166,18 @@ function generateClient() {
 function updateClientPatience() {
     gameState.clients.forEach(client => {
         if (client.patience > 0) {
-            client.patience -= 0.5 * gameState.gameSpeed;
+            // Slower patience decay for more time to assign clients
+            client.patience -= 0.15 * gameState.gameSpeed;
 
-            // Update mood based on patience
-            if (client.patience > 70) client.mood = "happy";
-            else if (client.patience > 40) client.mood = "neutral";
-            else if (client.patience > 20) client.mood = "stressed";
+            // Clear the justArrived flag after a short time
+            if (client.justArrived && Date.now() - client.arrivalTime > 500) {
+                client.justArrived = false;
+            }
+
+            // Update mood based on patience (adjusted for new max of 200)
+            if (client.patience > 140) client.mood = "happy";
+            else if (client.patience > 80) client.mood = "neutral";
+            else if (client.patience > 40) client.mood = "stressed";
             else client.mood = "angry";
 
             // Remove client if patience runs out
@@ -560,6 +571,19 @@ function handleDrop(event, room) {
 // ==================== UI RENDERING ====================
 
 /**
+ * Animate entrance door when a client arrives
+ */
+function animateEntranceDoor() {
+    const entranceArea = document.querySelector('.entrance-area');
+    if (entranceArea) {
+        entranceArea.classList.add('client-arriving');
+        setTimeout(() => {
+            entranceArea.classList.remove('client-arriving');
+        }, 800);
+    }
+}
+
+/**
  * Render waiting clients
  */
 function renderClients() {
@@ -571,7 +595,7 @@ function renderClients() {
     }
 
     container.innerHTML = gameState.clients.map(client => `
-        <div class="client-card"
+        <div class="client-card ${client.justArrived ? 'entering' : ''}"
              draggable="true"
              data-client-id="${client.id}"
              ondragstart="handleDragStart(event, ${JSON.stringify(client).replace(/"/g, '&quot;')})"
@@ -584,8 +608,9 @@ function renderClients() {
             <div class="client-service">Wants: ${client.requestedService}</div>
             <div class="client-payment">Will pay: ${formatMoney(client.payment)}</div>
             <div class="client-patience">
-                <div class="patience-bar" style="width: ${client.patience}%"></div>
+                <div class="patience-bar" style="width: ${(client.patience / client.maxPatience) * 100}%"></div>
             </div>
+            ${client.justArrived ? '<div class="entering-indicator">🚶 Just arrived!</div>' : ''}
         </div>
     `).join('');
 
