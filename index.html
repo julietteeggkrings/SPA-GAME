@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spa Management Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Game Container -->
+    <div id="game-container">
+
+        <!-- Header Section -->
+        <header class="game-header">
+            <div class="header-left">
+                <h1>🧖 Luxury Spa Manager</h1>
+                <div class="spa-name" id="spa-name">Serenity Spa</div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-box">
+                    <span class="stat-icon">💰</span>
+                    <div class="stat-info">
+                        <div class="stat-label">Money</div>
+                        <div class="stat-value" id="money">$5000</div>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon">⭐</span>
+                    <div class="stat-info">
+                        <div class="stat-label">Reputation</div>
+                        <div class="stat-value" id="reputation">50</div>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon">😊</span>
+                    <div class="stat-info">
+                        <div class="stat-label">Satisfaction</div>
+                        <div class="stat-value" id="satisfaction">100%</div>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon">🕐</span>
+                    <div class="stat-info">
+                        <div class="stat-label">Day</div>
+                        <div class="stat-value" id="day">1</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Game Area -->
+        <div class="game-main">
+
+            <!-- Left Sidebar - Waiting Clients -->
+            <aside class="sidebar-left">
+                <div class="section-header">
+                    <h2>👥 Waiting Clients</h2>
+                    <button class="btn-small" id="generate-client">+ New Client</button>
+                </div>
+                <div class="clients-waiting" id="clients-waiting">
+                    <!-- Clients will be dynamically added here -->
+                </div>
+                <div class="section-header" style="margin-top: 20px;">
+                    <h2>📅 Appointments</h2>
+                </div>
+                <div class="appointments-list" id="appointments-list">
+                    <div class="no-data">No upcoming appointments</div>
+                </div>
+            </aside>
+
+            <!-- Center - Spa Rooms -->
+            <main class="spa-rooms-area">
+                <div class="section-header">
+                    <h2>🏛️ Spa Facilities</h2>
+                    <div class="speed-controls">
+                        <button class="btn-small" id="speed-1x">1x</button>
+                        <button class="btn-small active" id="speed-2x">2x</button>
+                        <button class="btn-small" id="speed-3x">3x</button>
+                    </div>
+                </div>
+                <div class="rooms-grid" id="rooms-grid">
+                    <!-- Rooms will be dynamically added here -->
+                </div>
+            </main>
+
+            <!-- Right Sidebar - Services & Upgrades -->
+            <aside class="sidebar-right">
+                <div class="section-header">
+                    <h2>💆 Services</h2>
+                </div>
+                <div class="services-list" id="services-list">
+                    <!-- Services will be dynamically added here -->
+                </div>
+
+                <div class="section-header" style="margin-top: 20px;">
+                    <h2>⬆️ Upgrades</h2>
+                </div>
+                <div class="upgrades-list" id="upgrades-list">
+                    <!-- Upgrades will be dynamically added here -->
+                </div>
+
+                <div class="section-header" style="margin-top: 20px;">
+                    <h2>🎯 Goals</h2>
+                </div>
+                <div class="goals-list" id="goals-list">
+                    <div class="goal-item">
+                        <div class="goal-text">Reach $10,000</div>
+                        <div class="goal-progress">
+                            <div class="progress-bar" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Events/Notifications Area -->
+        <div class="events-container" id="events-container">
+            <!-- Event notifications will appear here -->
+        </div>
+
+        <!-- Modals -->
+        <div id="modal-overlay" class="modal-overlay hidden">
+            <div class="modal" id="room-details-modal">
+                <div class="modal-header">
+                    <h2 id="modal-title">Room Details</h2>
+                    <button class="modal-close" id="modal-close">&times;</button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- Modal content will be dynamically inserted -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script src="game.js"></script>
+</body>
+</html>
