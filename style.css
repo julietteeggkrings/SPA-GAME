@@ -7,8 +7,8 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #333;
+    background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 50%, #d4c4b0 100%);
+    color: #4a4a4a;
     overflow-x: hidden;
     min-height: 100vh;
 }
@@ -21,15 +21,16 @@ body {
 
 /* Header Styles */
 .game-header {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: linear-gradient(135deg, #5dada6 0%, #4a9d97 100%);
     border-radius: 15px;
     padding: 20px 30px;
     margin-bottom: 20px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    border: 3px solid rgba(255, 255, 255, 0.3);
 }
 
 .header-left h1 {
@@ -52,14 +53,15 @@ body {
 }
 
 .stat-box {
-    background: rgba(255, 255, 255, 0.95);
+    background: linear-gradient(135deg, #fffaf5 0%, #fef5ed 100%);
     border-radius: 12px;
     padding: 12px 20px;
     display: flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: transform 0.2s;
+    border: 2px solid rgba(93, 173, 166, 0.2);
 }
 
 .stat-box:hover {
@@ -100,21 +102,22 @@ body {
 
 .section-header h2 {
     font-size: 1.3em;
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    color: #5dada6;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Buttons */
 .btn-small {
-    background: white;
-    border: none;
+    background: linear-gradient(135deg, #fffaf5 0%, #fef5ed 100%);
+    border: 2px solid rgba(139, 195, 191, 0.3);
     padding: 8px 15px;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
     font-size: 0.9em;
     transition: all 0.2s;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    color: #5dada6;
 }
 
 .btn-small:hover {
@@ -127,8 +130,9 @@ body {
 }
 
 .btn-small.active {
-    background: #4CAF50;
+    background: linear-gradient(135deg, #5dada6 0%, #4a9d97 100%);
     color: white;
+    border-color: #4a9d97;
 }
 
 .speed-controls {
@@ -138,25 +142,27 @@ body {
 
 /* Sidebar Styles */
 .sidebar-left, .sidebar-right {
-    background: rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 250, 245, 0.9) 100%);
     border-radius: 15px;
     padding: 20px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     max-height: calc(100vh - 200px);
     overflow-y: auto;
+    border: 2px solid rgba(93, 173, 166, 0.15);
 }
 
-/* Entrance Area */
+/* Entrance Area - Reception Desk */
 .entrance-area {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #5dada6 0%, #4a9d97 100%);
     border-radius: 12px;
-    padding: 15px;
+    padding: 20px;
     margin-bottom: 20px;
     text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 3px solid rgba(255, 255, 255, 0.4);
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .entrance-area.client-arriving {
@@ -198,16 +204,16 @@ body {
 
 @keyframes entranceFlash {
     0% {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-color: rgba(255, 255, 255, 0.4);
     }
     50% {
-        box-shadow: 0 8px 24px rgba(76, 175, 80, 0.6);
-        border-color: #4CAF50;
+        box-shadow: 0 8px 24px rgba(139, 195, 191, 0.7);
+        border-color: #8bc3bf;
     }
     100% {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-color: rgba(255, 255, 255, 0.4);
     }
 }
 
@@ -220,25 +226,28 @@ body {
 }
 
 .client-card {
-    background: white;
-    border-radius: 10px;
+    background: linear-gradient(135deg, #fffaf5 0%, #fef9f3 100%);
+    border-radius: 12px;
     padding: 15px;
     cursor: move;
     transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #4CAF50;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid #8bc3bf;
     position: relative;
+    border: 2px solid rgba(139, 195, 191, 0.2);
+    border-left: 5px solid #8bc3bf;
 }
 
 .client-card.entering {
     animation: clientEntering 0.6s ease-out;
-    border-left: 4px solid #2196F3;
-    box-shadow: 0 4px 16px rgba(33, 150, 243, 0.4);
+    border-left: 5px solid #5dada6;
+    box-shadow: 0 4px 16px rgba(93, 173, 166, 0.4);
 }
 
 .client-card.urgent {
-    border-left: 4px solid #ff4444;
+    border-left: 5px solid #e8a098;
     animation: urgentPulse 2s ease-in-out infinite;
+    background: linear-gradient(135deg, #fff5f3 0%, #fef0ed 100%);
 }
 
 .client-card:hover {
@@ -286,13 +295,14 @@ body {
 }
 
 .client-vip {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-    color: #333;
+    background: linear-gradient(135deg, #f4d5a6 0%, #e8c090 100%);
+    color: #6b4e31;
     padding: 3px 10px;
     border-radius: 5px;
     font-size: 0.75em;
     font-weight: bold;
-    box-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 2px 4px rgba(244, 213, 166, 0.4);
+    border: 1px solid rgba(232, 192, 144, 0.5);
 }
 
 .client-mood-display {
@@ -354,13 +364,14 @@ body {
 .entering-indicator {
     margin-top: 8px;
     padding: 4px 8px;
-    background: linear-gradient(90deg, #2196F3, #64B5F6);
+    background: linear-gradient(90deg, #5dada6, #8bc3bf);
     color: white;
     border-radius: 5px;
     font-size: 0.85em;
     font-weight: bold;
     text-align: center;
     animation: pulse 1s ease-in-out infinite;
+    box-shadow: 0 2px 4px rgba(93, 173, 166, 0.3);
 }
 
 /* Appointments List */
@@ -371,10 +382,12 @@ body {
 }
 
 .appointment-item {
-    background: white;
+    background: linear-gradient(135deg, #fffaf5 0%, #fef9f3 100%);
     border-radius: 8px;
     padding: 12px;
-    border-left: 4px solid #2196F3;
+    border-left: 4px solid #8bc3bf;
+    border: 2px solid rgba(139, 195, 191, 0.2);
+    border-left: 4px solid #8bc3bf;
 }
 
 .appointment-time {
@@ -396,11 +409,12 @@ body {
 
 /* Spa Rooms Area */
 .spa-rooms-area {
-    background: rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 250, 245, 0.9) 100%);
     border-radius: 15px;
     padding: 20px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(93, 173, 166, 0.15);
 }
 
 .rooms-grid {
@@ -410,15 +424,16 @@ body {
 }
 
 .room-card {
-    background: white;
+    background: linear-gradient(135deg, #fffaf5 0%, #fef9f3 100%);
     border-radius: 12px;
     padding: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s;
     position: relative;
     min-height: 200px;
     display: flex;
     flex-direction: column;
+    border: 2px solid rgba(139, 195, 191, 0.2);
 }
 
 .room-card:hover {
@@ -427,12 +442,13 @@ body {
 }
 
 .room-card.drop-zone {
-    border: 3px dashed #4CAF50;
-    background: #e8f5e9;
+    border: 3px dashed #8bc3bf;
+    background: linear-gradient(135deg, #f0f9f8 0%, #e6f5f3 100%);
 }
 
 .room-card.occupied {
-    border: 2px solid #ff9800;
+    border: 2px solid #e8c090;
+    box-shadow: 0 4px 14px rgba(232, 192, 144, 0.3);
 }
 
 .room-card.client-arrived {
@@ -453,12 +469,13 @@ body {
 }
 
 .room-level {
-    background: #2196F3;
+    background: linear-gradient(135deg, #5dada6 0%, #4a9d97 100%);
     color: white;
     padding: 4px 10px;
     border-radius: 5px;
     font-size: 0.85em;
     font-weight: bold;
+    box-shadow: 0 2px 4px rgba(93, 173, 166, 0.3);
 }
 
 .room-name {
@@ -497,11 +514,12 @@ body {
 }
 
 .room-client {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #8bc3bf 0%, #6fb3ad 100%);
     color: white;
     border-radius: 8px;
     padding: 12px;
     margin-top: auto;
+    box-shadow: 0 2px 6px rgba(139, 195, 191, 0.3);
 }
 
 .room-client-name {
@@ -537,7 +555,7 @@ body {
 
 .btn-action {
     flex: 1;
-    background: #4CAF50;
+    background: linear-gradient(135deg, #8bc3bf 0%, #6fb3ad 100%);
     color: white;
     border: none;
     padding: 8px;
@@ -545,19 +563,21 @@ body {
     cursor: pointer;
     font-weight: 600;
     transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(139, 195, 191, 0.3);
 }
 
 .btn-action:hover {
-    background: #45a049;
+    background: linear-gradient(135deg, #6fb3ad 0%, #5dada6 100%);
     transform: scale(1.05);
 }
 
 .btn-action.upgrade {
-    background: #FF9800;
+    background: linear-gradient(135deg, #e8c090 0%, #d4a574 100%);
+    box-shadow: 0 2px 6px rgba(232, 192, 144, 0.3);
 }
 
 .btn-action.upgrade:hover {
-    background: #e68900;
+    background: linear-gradient(135deg, #d4a574 0%, #c59565 100%);
 }
 
 .btn-action:disabled {
@@ -574,10 +594,11 @@ body {
 }
 
 .service-item {
-    background: white;
+    background: linear-gradient(135deg, #fffaf5 0%, #fef9f3 100%);
     border-radius: 10px;
     padding: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(139, 195, 191, 0.15);
 }
 
 .service-header {
@@ -593,7 +614,7 @@ body {
 }
 
 .service-price {
-    color: #4CAF50;
+    color: #5dada6;
     font-weight: bold;
 }
 
@@ -612,12 +633,13 @@ body {
 }
 
 .upgrade-item {
-    background: white;
+    background: linear-gradient(135deg, #fffaf5 0%, #fef9f3 100%);
     border-radius: 10px;
     padding: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     cursor: pointer;
     transition: all 0.2s;
+    border: 2px solid rgba(139, 195, 191, 0.15);
 }
 
 .upgrade-item:hover {
@@ -643,12 +665,13 @@ body {
 }
 
 .upgrade-cost {
-    background: #FF9800;
+    background: linear-gradient(135deg, #e8c090 0%, #d4a574 100%);
     color: white;
     padding: 4px 10px;
     border-radius: 5px;
     font-size: 0.85em;
     font-weight: bold;
+    box-shadow: 0 2px 4px rgba(232, 192, 144, 0.3);
 }
 
 .upgrade-description {
@@ -664,9 +687,10 @@ body {
 }
 
 .goal-item {
-    background: white;
+    background: linear-gradient(135deg, #fffaf5 0%, #fef9f3 100%);
     border-radius: 8px;
     padding: 10px;
+    border: 2px solid rgba(139, 195, 191, 0.2);
 }
 
 .goal-text {
@@ -684,7 +708,7 @@ body {
 
 .progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    background: linear-gradient(90deg, #5dada6, #8bc3bf);
     transition: width 0.5s;
 }
 
@@ -701,27 +725,33 @@ body {
 }
 
 .event-notification {
-    background: white;
+    background: linear-gradient(135deg, #fffaf5 0%, #fef5ed 100%);
     border-radius: 10px;
     padding: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     animation: slideIn 0.3s ease-out;
-    border-left: 4px solid #4CAF50;
+    border-left: 4px solid #8bc3bf;
     display: flex;
     align-items: center;
     gap: 10px;
+    border: 2px solid rgba(139, 195, 191, 0.2);
+    border-left: 4px solid #8bc3bf;
 }
 
 .event-notification.warning {
-    border-left-color: #FF9800;
+    border-left-color: #e8c090;
 }
 
 .event-notification.error {
-    border-left-color: #f44336;
+    border-left-color: #e8a098;
 }
 
 .event-notification.info {
-    border-left-color: #2196F3;
+    border-left-color: #5dada6;
+}
+
+.event-notification.success {
+    border-left-color: #8bc3bf;
 }
 
 .event-icon {
@@ -781,10 +811,10 @@ body {
 
 @keyframes urgentPulse {
     0%, 100% {
-        box-shadow: 0 2px 8px rgba(255, 68, 68, 0.3);
+        box-shadow: 0 2px 8px rgba(232, 160, 152, 0.3);
     }
     50% {
-        box-shadow: 0 4px 16px rgba(255, 68, 68, 0.6);
+        box-shadow: 0 4px 16px rgba(232, 160, 152, 0.6);
     }
 }
 
@@ -809,16 +839,16 @@ body {
 @keyframes roomReceiveClient {
     0% {
         transform: scale(1);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
     }
     50% {
         transform: scale(1.05);
-        box-shadow: 0 8px 24px rgba(76, 175, 80, 0.6);
-        background: #e8f5e9;
+        box-shadow: 0 8px 24px rgba(139, 195, 191, 0.6);
+        background: linear-gradient(135deg, #f0f9f8 0%, #e6f5f3 100%);
     }
     100% {
         transform: scale(1);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
     }
 }
 
@@ -918,7 +948,7 @@ body {
 }
 
 .walking-name {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #5dada6 0%, #4a9d97 100%);
     color: white;
     padding: 4px 12px;
     border-radius: 8px;
