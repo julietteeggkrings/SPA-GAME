@@ -435,6 +435,10 @@ body {
     border: 2px solid #ff9800;
 }
 
+.room-card.client-arrived {
+    animation: roomReceiveClient 0.6s ease-out;
+}
+
 .room-header {
     display: flex;
     justify-content: space-between;
@@ -802,6 +806,22 @@ body {
     }
 }
 
+@keyframes roomReceiveClient {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 8px 24px rgba(76, 175, 80, 0.6);
+        background: #e8f5e9;
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
 /* Modal Styles */
 .modal-overlay {
     position: fixed;
@@ -869,6 +889,76 @@ body {
 
 .modal-body {
     padding: 20px;
+}
+
+/* Walking Character Animation */
+.walking-character {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.walking-avatar {
+    font-size: 4em;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: transform 0.2s;
+}
+
+.walking-character.walking .walking-avatar {
+    animation: walkingBob 0.4s ease-in-out infinite;
+}
+
+.walking-character.arriving .walking-avatar {
+    animation: arrivalBounce 0.3s ease-out;
+}
+
+.walking-name {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.9em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+}
+
+@keyframes walkingBob {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes arrivalBounce {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Footstep Trail */
+.footstep {
+    position: fixed;
+    z-index: 9998;
+    pointer-events: none;
+    font-size: 1.5em;
+    transform: translate(-50%, -50%);
+    opacity: 0.6;
+    transition: opacity 0.3s ease-out;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 /* Utility Classes */

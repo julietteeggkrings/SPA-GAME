@@ -233,9 +233,32 @@ function assignClientToRoom(client, room) {
         return false;
     }
 
+    // Get the positions before removing client from DOM
+    const clientCard = document.querySelector(`[data-client-id="${client.id}"]`);
+    const roomCard = document.querySelector(`[data-room-id="${room.id}"]`);
+
+    if (!clientCard || !roomCard) {
+        // Fallback to instant assignment if elements not found
+        startServiceInRoom(client, room);
+        return true;
+    }
+
     // Remove client from waiting list
     removeClient(client.id);
 
+    // Animate client walking to room
+    animateClientWalking(client, clientCard, roomCard, () => {
+        // After animation completes, start the service
+        startServiceInRoom(client, room);
+    });
+
+    return true;
+}
+
+/**
+ * Start the actual service in a room (called after walking animation)
+ */
+function startServiceInRoom(client, room) {
     // Get service details
     const service = getServiceByName(client.requestedService);
     const duration = service.duration / (room.speed * gameState.modifiers.speedBonus);
@@ -253,9 +276,108 @@ function assignClientToRoom(client, room) {
     room.currentClient = client;
     gameState.activeServices.push(activeService);
 
+    // Flash the room to show client has arrived
+    const roomCard = document.querySelector(`[data-room-id="${room.id}"]`);
+    if (roomCard) {
+        roomCard.classList.add('client-arrived');
+        setTimeout(() => {
+            roomCard.classList.remove('client-arrived');
+        }, 600);
+    }
+
     showNotification("Service Started", `${client.name} started ${service.name} in ${room.name}`, "info");
     renderRooms();
-    return true;
+}
+
+/**
+ * Animate client walking from waiting area to room
+ */
+function animateClientWalking(client, fromElement, toElement, onComplete) {
+    // Get positions
+    const fromRect = fromElement.getBoundingClientRect();
+    const toRect = toElement.getBoundingClientRect();
+
+    // Create walking character element
+    const walkingChar = document.createElement('div');
+    walkingChar.className = 'walking-character';
+    walkingChar.innerHTML = `
+        <div class="walking-avatar">${client.avatar}</div>
+        <div class="walking-name">${client.name}</div>
+    `;
+
+    // Position at start location
+    walkingChar.style.left = `${fromRect.left + fromRect.width / 2}px`;
+    walkingChar.style.top = `${fromRect.top + fromRect.height / 2}px`;
+
+    document.body.appendChild(walkingChar);
+
+    // Trigger animation after a brief delay to ensure element is rendered
+    setTimeout(() => {
+        const deltaX = toRect.left + toRect.width / 2 - (fromRect.left + fromRect.width / 2);
+        const deltaY = toRect.top + toRect.height / 2 - (fromRect.top + fromRect.height / 2);
+
+        // Calculate distance and duration (longer distance = longer animation)
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        const duration = Math.max(800, Math.min(2000, distance * 1.5)); // 800ms to 2000ms
+
+        // Flip character if walking left
+        if (deltaX < 0) {
+            walkingChar.style.transform = 'scaleX(-1)';
+        }
+
+        walkingChar.style.transition = `left ${duration}ms ease-in-out, top ${duration}ms ease-in-out`;
+        walkingChar.style.left = `${toRect.left + toRect.width / 2}px`;
+        walkingChar.style.top = `${toRect.top + toRect.height / 2}px`;
+
+        // Add walking animation class
+        walkingChar.classList.add('walking');
+
+        // Create footstep trail
+        createFootstepTrail(fromRect, toRect, duration);
+
+        // Remove element and call completion callback after animation
+        setTimeout(() => {
+            walkingChar.classList.add('arriving');
+            setTimeout(() => {
+                walkingChar.remove();
+                if (onComplete) onComplete();
+            }, 300);
+        }, duration);
+    }, 50);
+}
+
+/**
+ * Create footstep trail along the walking path
+ */
+function createFootstepTrail(fromRect, toRect, duration) {
+    const startX = fromRect.left + fromRect.width / 2;
+    const startY = fromRect.top + fromRect.height / 2;
+    const endX = toRect.left + toRect.width / 2;
+    const endY = toRect.top + toRect.height / 2;
+
+    const numSteps = Math.floor(duration / 200); // One footstep every 200ms
+
+    for (let i = 0; i < numSteps; i++) {
+        setTimeout(() => {
+            const progress = (i + 1) / numSteps;
+            const x = startX + (endX - startX) * progress;
+            const y = startY + (endY - startY) * progress;
+
+            const footstep = document.createElement('div');
+            footstep.className = 'footstep';
+            footstep.textContent = '👣';
+            footstep.style.left = `${x}px`;
+            footstep.style.top = `${y}px`;
+
+            document.body.appendChild(footstep);
+
+            // Fade out and remove
+            setTimeout(() => {
+                footstep.style.opacity = '0';
+                setTimeout(() => footstep.remove(), 300);
+            }, 200);
+        }, i * 200);
+    }
 }
 
 /**
